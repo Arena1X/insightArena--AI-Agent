@@ -14,6 +14,7 @@ async function bootstrap() {
     .setDescription('The AI Agent API for InsightArena Prediction Market')
     .setVersion('1.0')
     .addTag('agent')
+    .addTag('assistant')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
