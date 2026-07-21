@@ -36,7 +36,7 @@
     "axios": "^1.4.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "openai": "^4.0.0",
+    "openai": "^6.48.0",
     "pg": "^8.22.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
