@@ -1,27 +1,57 @@
-import { HttpService } from "@nestjs/axios";
-import { TestingModule } from "@nestjs/testing";
-import { AppModule } from "../app.module";
-import {
-  createApiFootballClientMock,
-  createTestingModule,
-} from "../../test/utils";
-import { AgentService } from "./agent.service";
+import { Test, TestingModule } from '@nestjs/testing';
+import { AgentService } from './agent.service';
+import { HttpService } from '@nestjs/axios';
+import { of } from 'rxjs';
+import { AxiosResponse } from 'axios';
 
-describe("AgentModule testing pattern", () => {
-  let moduleRef: TestingModule;
+describe('AgentService', () => {
+  let service: AgentService;
 
-  afterEach(async () => {
-    await moduleRef?.close();
+  const mockHttpService = {
+    post: jest.fn(),
+    get: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AgentService,
+        {
+          provide: HttpService,
+          useValue: mockHttpService,
+        },
+      ],
+    }).compile();
+
+    service = module.get<AgentService>(AgentService);
   });
 
-  it("compiles the application with external clients mocked", async () => {
-    const apiFootballClient =
-      createApiFootballClientMock<Pick<HttpService, "get">>();
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
 
-    moduleRef = await createTestingModule({ imports: [AppModule] }, [
-      { token: HttpService, value: apiFootballClient },
-    ]);
+  describe('getStatus', () => {
+    it('should return healthy status', async () => {
+      const result = await service.getStatus();
+      expect(result.status).toBe('healthy');
+      expect(result.mode).toBe('active');
+    });
 
-    expect(moduleRef.get(AgentService)).toBeInstanceOf(AgentService);
+    it('should return all capability names', async () => {
+      const result = await service.getStatus();
+      const capabilityNames = result.capabilities.map((c) => c.name);
+      expect(capabilityNames).toContain('prediction_analyst');
+      expect(capabilityNames).toContain('market_creator');
+      expect(capabilityNames).toContain('oracle_validator');
+      expect(capabilityNames).toContain('leaderboard_coach');
+      expect(capabilityNames).toContain('creator_assistant');
+    });
+
+    it('should have a valid timestamp', async () => {
+      const result = await service.getStatus();
+      const timestamp = new Date(result.timestamp);
+      expect(timestamp instanceof Date).toBe(true);
+      expect(isNaN(timestamp.getTime())).toBe(false);
+    });
   });
 });

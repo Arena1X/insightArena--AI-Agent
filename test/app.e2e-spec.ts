@@ -1,76 +1,38 @@
-import { Controller, Get, Inject, INestApplication } from "@nestjs/common";
-import request = require("supertest");
-import {
-  createInsightArenaClientMock,
-  createLlmServiceMock,
-  createSorobanServiceMock,
-  createTestingModule,
-} from "./utils";
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as request from 'supertest';
+import { AppModule } from '../src/app.module';
 
-const LLM_SERVICE = Symbol("LlmService");
-const INSIGHT_ARENA_CLIENT = Symbol("InsightArenaClient");
-const SOROBAN_SERVICE = Symbol("SorobanService");
-
-interface LlmServiceContract {
-  summarize(): Promise<string>;
-}
-
-interface InsightArenaClientContract {
-  getStatus(): Promise<string>;
-}
-
-interface SorobanServiceContract {
-  getNetwork(): Promise<string>;
-}
-
-@Controller("test-harness")
-class TestHarnessController {
-  constructor(
-    @Inject(LLM_SERVICE) private readonly llmService: LlmServiceContract,
-    @Inject(INSIGHT_ARENA_CLIENT)
-    private readonly insightArenaClient: InsightArenaClientContract,
-    @Inject(SOROBAN_SERVICE)
-    private readonly sorobanService: SorobanServiceContract
-  ) {}
-
-  @Get()
-  async getStatus() {
-    const [llm, insightArena, soroban] = await Promise.all([
-      this.llmService.summarize(),
-      this.insightArenaClient.getStatus(),
-      this.sorobanService.getNetwork(),
-    ]);
-
-    return { llm, insightArena, soroban };
-  }
-}
-
-describe("HTTP testing pattern (e2e)", () => {
+describe('Agent API (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const llmService = createLlmServiceMock<LlmServiceContract>({
-      summarize: jest.fn().mockResolvedValue("ready"),
-    });
-    const insightArenaClient =
-      createInsightArenaClientMock<InsightArenaClientContract>({
-        getStatus: jest.fn().mockResolvedValue("connected"),
-      });
-    const sorobanService = createSorobanServiceMock<SorobanServiceContract>({
-      getNetwork: jest.fn().mockResolvedValue("testnet"),
-    });
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-    const moduleRef = await createTestingModule({
-      controllers: [TestHarnessController],
-      providers: [
-        { provide: LLM_SERVICE, useValue: llmService },
-        { provide: INSIGHT_ARENA_CLIENT, useValue: insightArenaClient },
-        { provide: SOROBAN_SERVICE, useValue: sorobanService },
-      ],
-    });
+    app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-    app = moduleRef.createNestApplication();
-    app.setGlobalPrefix("api/v1");
+    const config = new DocumentBuilder()
+      .setTitle('InsightArena AI Agent API')
+      .setDescription('The AI Agent API for InsightArena Prediction Market')
+      .setVersion('1.0')
+      .addTag('agent')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+        'access-token',
+      )
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/v1/docs', app, document);
+
     await app.init();
   });
 
@@ -78,14 +40,52 @@ describe("HTTP testing pattern (e2e)", () => {
     await app.close();
   });
 
-  it("serves an endpoint with every external boundary mocked", async () => {
-    await request(app.getHttpServer())
-      .get("/api/v1/test-harness")
-      .expect(200)
-      .expect({
-        llm: "ready",
-        insightArena: "connected",
-        soroban: "testnet",
-      });
+  describe('GET /api/v1/agent/status', () => {
+    it('should return 200 and agent status', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/agent/status')
+        .expect(200);
+
+      expect(response.body).toHaveProperty('status');
+      expect(response.body).toHaveProperty('mode');
+      expect(response.body).toHaveProperty('uptime');
+      expect(response.body).toHaveProperty('model');
+      expect(response.body).toHaveProperty('capabilities');
+      expect(response.body).toHaveProperty('timestamp');
+      expect(response.body.status).toBe('healthy');
+    });
+
+    it('should return capabilities array', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/agent/status')
+        .expect(200);
+
+      expect(Array.isArray(response.body.capabilities)).toBe(true);
+      expect(response.body.capabilities.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('GET /api/v1/docs', () => {
+    it('should return Swagger UI HTML', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/docs')
+        .expect(200);
+
+      expect(response.text).toContain('swagger');
+      expect(response.text).toContain('Swagger UI');
+    });
+  });
+
+  describe('GET /api/v1/docs-json', () => {
+    it('should return OpenAPI JSON spec', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/v1/docs-json')
+        .expect(200);
+
+      expect(response.body).toHaveProperty('openapi');
+      expect(response.body).toHaveProperty('info');
+      expect(response.body).toHaveProperty('paths');
+      expect(response.body.info.title).toContain('InsightArena');
+    });
   });
 });
