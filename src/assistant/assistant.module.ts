@@ -3,6 +3,7 @@ import { AssistantController } from './assistant.controller';
 import { AssistantService } from './assistant.service';
 import { RecommendationService } from './recommendation.service';
 import { StructureAdviceService } from './structure-advice.service';
+import { NamingService } from './naming.service';
 import { LlmService } from './llm/llm.service';
 
 @Module({
@@ -11,6 +12,7 @@ import { LlmService } from './llm/llm.service';
     AssistantService,
     RecommendationService,
     StructureAdviceService,
+    NamingService,
     LlmService,
   ],
   exports: [LlmService],
