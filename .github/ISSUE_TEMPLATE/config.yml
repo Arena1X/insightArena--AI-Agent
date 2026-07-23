@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Question or Discussion
+    url: https://github.com/your-org/insightarena-ai-agent/discussions
+    about: Ask questions or start a discussion with the community
+  - name: 📋 Check Task List
+    url: ../AI_AGENT_ISSUES.md
+    about: See the canonical list of planned tasks and features

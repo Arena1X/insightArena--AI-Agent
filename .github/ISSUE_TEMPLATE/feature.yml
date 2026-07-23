@@ -1,0 +1,105 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement for the AI Agent
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature! Please fill out the details below to help us understand your request.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: |
+        Describe the current situation or problem that your feature would solve.
+        What are you currently doing? What's the pain point?
+      placeholder: |
+        Example: "Currently, users can only submit predictions manually. This is time-consuming for power users who want to submit many predictions at once."
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: |
+        What should the feature do? List the specific functionality or behavior you're requesting.
+        Break it down into clear, actionable items.
+      placeholder: |
+        - Add bulk prediction submission endpoint
+        - Accept CSV file with match IDs and confidence scores
+        - Validate all predictions before processing
+        - Return summary report with success/failure counts
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: |
+        Define how we'll know the feature is complete and working correctly.
+        These should be testable conditions.
+      placeholder: |
+        - [ ] POST /api/predictions/bulk accepts CSV with format: matchId, confidence
+        - [ ] System validates all rows before processing
+        - [ ] Invalid rows are reported with specific error messages
+        - [ ] Response includes counts: processed, failed, skipped
+        - [ ] Integration tests cover success and error scenarios
+        - [ ] API documentation is updated in Swagger
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent-role
+    attributes:
+      label: Related AI Agent Role (if applicable)
+      description: Which AI Agent domain does this relate to?
+      options:
+        - "N/A - General infrastructure"
+        - "🔮 Prediction Analyst"
+        - "🏟️ Autonomous Market Creator"
+        - "✅ Oracle Validator"
+        - "🏆 Leaderboard Coach"
+        - "🛠️ Creator Assistant"
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this feature?
+      options:
+        - "Low - Nice to have"
+        - "Medium - Important"
+        - "High - Blocking other work"
+        - "Critical - Blocking release"
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: |
+        Did you consider other approaches? What did you decide against and why?
+      placeholder: "Example: Considered supporting JSON format instead of CSV, but CSV is simpler for our use case."
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: |
+        Anything else we should know? Screenshots, mockups, related issues, links to documentation?
+      placeholder: "Add any other context or attachments here."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched the issues to avoid duplicates
+          required: true
+        - label: I've checked [AI_AGENT_ISSUES.md](../AI_AGENT_ISSUES.md) for similar planned work
+          required: true
+        - label: I'm following the feature request format
+          required: true
