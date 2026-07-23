@@ -74,4 +74,34 @@ Implementation is driven by GitHub Issues, covering:
 - ML model integration
 - User coaching logic
 
+See [AI_AGENT_ISSUES.md](./AI_AGENT_ISSUES.md) for the complete, canonical task list.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether you're fixing a bug, adding a feature, or improving documentation, here's how to get started:
+
+### Quick Start
+
+1. **Read the contributor guide:** [CONTRIBUTING.md](./CONTRIBUTING.md)
+2. **Check the task list:** [AI_AGENT_ISSUES.md](./AI_AGENT_ISSUES.md)
+3. **Pick an issue** marked 🟢 "Ready to implement"
+4. **Follow the setup steps** in [CONTRIBUTING.md](./CONTRIBUTING.md)
+5. **Open a PR** using the [pull request template](.github/PULL_REQUEST_TEMPLATE.md)
+
+### Key Resources
+
+- **Setup & Development:** [CONTRIBUTING.md](./CONTRIBUTING.md) — Prerequisites, environment setup, how to run/test
+- **Coding Standards:** [CONTRIBUTING.md](./CONTRIBUTING.md#code-style) — TypeScript, NestJS, naming conventions
+- **Git Workflow:** [CONTRIBUTING.md](./CONTRIBUTING.md#git-conventions) — Branch naming, commit messages
+- **PR Process:** [CONTRIBUTING.md](./CONTRIBUTING.md#pull-request-process) — What we check before merging
+- **Roadmap & Tasks:** [AI_AGENT_ISSUES.md](./AI_AGENT_ISSUES.md) — All planned work, organized by agent role
+
+### Issue Templates
+
+When opening an issue, use the structured templates:
+- [🚀 Feature Request](.github/ISSUE_TEMPLATE/feature.yml) — Context, requirements, acceptance criteria
+- [🐛 Bug Report](.github/ISSUE_TEMPLATE/bug.yml) — Expected vs actual behavior, reproduction steps
+
 ---

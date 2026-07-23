@@ -1,0 +1,142 @@
+name: 🐛 Bug Report
+description: Report a bug or issue you've encountered
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Help us fix it by providing detailed information.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: |
+        Describe the situation in which you encountered the bug.
+        - What were you trying to do?
+        - What was your environment (Node version, OS, etc.)?
+        - Can you consistently reproduce it?
+      placeholder: |
+        Example: "I was submitting a bulk prediction CSV with 50 matches. Using Node 20.11.0 on macOS 14.4.1. The issue occurs every time I try to upload a CSV larger than 30 rows."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: |
+        What should have happened?
+      placeholder: |
+        Example: "The predictions should be processed successfully and I should get a 200 response with a summary report."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: |
+        What actually happened instead?
+      placeholder: |
+        Example: "I get a 500 error after 30 seconds, with error message: 'Request timeout'. The predictions are partially processed (15 out of 50)."
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs / Stack Trace
+      description: |
+        Paste any error messages, logs, or stack traces (wrap in code blocks).
+      placeholder: |
+        ```
+        [18:45:32] ERROR [ExceptionFilter] Unhandled exception
+        Error: ENOBUFS: no buffer space available, write
+            at Process._write (internal/stream_base:433:15)
+            at processTicksAndRejection
+        ```
+      render: shell
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Provide step-by-step instructions to reproduce the bug.
+      placeholder: |
+        1. Create a CSV file with 50 rows (matchId, confidence)
+        2. POST to http://localhost:3001/api/predictions/bulk
+        3. Wait for response...
+        4. See error in logs
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Which environment?
+      options:
+        - "Development (local)"
+        - "Staging"
+        - "Production"
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      placeholder: "e.g., 20.11.0"
+      validations:
+        required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "e.g., macOS 14.4.1, Ubuntu 22.04, Windows 11"
+      validations:
+        required: true
+
+  - type: textarea
+    id: code-example
+    attributes:
+      label: Code Example (if applicable)
+      description: |
+        If you can share code that triggers the bug, paste it here (wrap in code blocks).
+      placeholder: |
+        ```typescript
+        const result = await agentService.predictBatch({
+          matches: largeArray,  // 50+ items
+        });
+        ```
+      render: typescript
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Additional Files
+      description: |
+        Attach screenshots, network logs (HAR), database dumps, or any other files that help explain the issue.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: |
+        Anything else? Links to related issues, workarounds you've found, etc.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I've searched existing issues to avoid duplicates
+          required: true
+        - label: I'm using the latest version of the code
+          required: true
+        - label: I've checked logs for clues
+          required: true
+        - label: I can reliably reproduce the issue
+          required: true
