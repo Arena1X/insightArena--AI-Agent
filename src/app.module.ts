@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AgentModule } from './agent/agent.module';
 import { AssistantModule } from './assistant/assistant.module';
+import { StellarModule } from './stellar/stellar.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { AssistantModule } from './assistant/assistant.module';
     ScheduleModule.forRoot(),
     AgentModule,
     AssistantModule,
+    StellarModule,
   ],
 })
 export class AppModule {}

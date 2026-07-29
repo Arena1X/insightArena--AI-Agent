@@ -3,6 +3,12 @@ import * as https from "node:https";
 
 const EXTERNAL_NETWORK_ERROR = "External network access is disabled in tests";
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+const STELLAR_TESTNET_HOSTS = new Set([
+  "soroban-testnet.stellar.org",
+  "horizon-testnet.stellar.org",
+  "friendbot.stellar.org",
+]);
+const ALLOW_STELLAR_NETWORK = process.env.RUN_STELLAR_TESTS === "1";
 
 function normalizeHostname(host: string): string {
   if (host.startsWith("[")) {
@@ -40,10 +46,20 @@ function hostnameFrom(target: unknown): string | undefined {
 
 function assertLoopback(target: unknown): void {
   const hostname = hostnameFrom(target);
-
-  if (hostname && !LOOPBACK_HOSTS.has(normalizeHostname(hostname))) {
-    throw new Error(`${EXTERNAL_NETWORK_ERROR}: ${hostname}`);
+  if (!hostname) {
+    return;
   }
+
+  const normalized = normalizeHostname(hostname);
+  if (LOOPBACK_HOSTS.has(normalized)) {
+    return;
+  }
+
+  if (ALLOW_STELLAR_NETWORK && STELLAR_TESTNET_HOSTS.has(normalized)) {
+    return;
+  }
+
+  throw new Error(`${EXTERNAL_NETWORK_ERROR}: ${hostname}`);
 }
 
 function guardNodeRequest(
