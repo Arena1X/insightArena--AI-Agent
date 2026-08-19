@@ -9,5 +9,6 @@
   "moduleNameMapper": {
     "^src/(.*)$": "<rootDir>/../src/$1",
     "^@stellar/stellar-sdk$": "<rootDir>/mocks/stellar-sdk.mock.ts"
-  }
+  },
+  "setupFilesAfterEnv": ["<rootDir>/setup.ts"]
 }
