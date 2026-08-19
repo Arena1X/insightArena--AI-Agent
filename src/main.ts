@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
@@ -8,6 +9,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new ApiExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('InsightArena AI Agent API')
@@ -15,18 +17,11 @@ async function bootstrap() {
       'The AI Agent API for InsightArena Prediction Market. This service provides autonomous market analysis, AI-powered predictions, personalized user coaching, leaderboard insights, and oracle validation for the InsightArena platform.',
     )
     .setVersion('1.0')
-    .setContact(
-      'InsightArena Team',
-      'https://insightarena.io',
-      'dev@insightarena.io',
-    )
+    .setContact('InsightArena Team', 'https://insightarena.io', 'dev@insightarena.io')
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer('http://localhost:3001', 'Local development server')
     .addServer('https://api.insightarena.io', 'Production server')
-    .addTag(
-      'agent',
-      'Core AI Agent endpoints for market analysis, predictions, and user coaching',
-    )
+    .addTag('agent', 'Core AI Agent endpoints for market analysis, predictions, and user coaching')
     .addTag('health', 'Health check and monitoring endpoints')
     .addBearerAuth(
       {
@@ -59,9 +54,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3001;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
-  console.log(
-    `Swagger documentation available at: http://localhost:${port}/api/v1/docs`,
-  );
+  console.log(`Swagger documentation available at: http://localhost:${port}/api/v1/docs`);
 }
 
 bootstrap();
